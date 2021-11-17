@@ -1,13 +1,13 @@
-import { Box, ChakraProvider, Heading } from '@chakra-ui/react';
-import React, { useRef, useState } from 'react';
+import { Box, ChakraProvider, Heading, Button } from '@chakra-ui/react';
+import { HStack } from '@chakra-ui/layout';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, AlertIcon } from '@chakra-ui/alert';
-import { useLoading } from './hooks/useLoading';
 import { VideoDetails } from './types/Video';
 import { getVideoDetails } from './utils/getVideoDetails';
 
 function App() {
   const [details, setDetails] = useState<VideoDetails | null>(null);
-  const [loading, toggleLoading] = useLoading(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<String | null>();
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,11 +27,19 @@ function App() {
     }
 
     if (files.length === 1) {
-      // loading
-      toggleLoading();
       const file = files[0];
 
+      // only mp4
+      // const allowedTypes = /(\.mp4|\.ogg|\.bmp|\.gif|\.png)$/i;
+      const allowedTypes = /(\.mp4)$/i;
+
+      if (!allowedTypes.exec(file.name)) {
+        setError('Selected file type is not mp4.');
+        return;
+      }
+
       try {
+        setLoading(true);
         const fileDetails = await getVideoDetails(file);
 
         // revoke existing URL blob
@@ -46,18 +54,16 @@ function App() {
         } else {
           console.log(err);
         }
-
-        // remove selected file
-        if (fileRef.current) {
-          fileRef.current.value = '';
-        }
       }
-      toggleLoading();
+      setLoading(false);
     }
   }
 
-  if (details) {
-    console.log(details.url);
+  function seekTo(time: number) {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      videoRef.current.play();
+    }
   }
 
   return (
@@ -83,6 +89,11 @@ function App() {
           {loading ? 'loading...' : null}
           {details ? JSON.stringify(details) : null}
         </Box>
+        <HStack mt={4}>
+          <Button>Play</Button>
+          <Button>Pause</Button>
+          <Button onClick={() => seekTo(194)}>Go to 03:14</Button>
+        </HStack>
       </Box>
     </ChakraProvider>
   );

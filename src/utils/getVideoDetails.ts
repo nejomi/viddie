@@ -1,49 +1,21 @@
-import md5 from 'crypto-js/md5';
 import { VideoDetails } from '../types/Video';
+import SparkMD5 from 'spark-md5';
 
+// TODO: fix hash stutter
 export const getVideoDetails = (file: File) => {
   // return promise
   return new Promise<VideoDetails>(async (resolve, reject) => {
-    // only mp4
-    // const allowedTypes = /(\.mp4|\.ogg|\.bmp|\.gif|\.png)$/i;
-    const allowedTypes = /(\.mp4)$/i;
-
-    if (!allowedTypes.exec(file.name)) {
-      reject(new Error('Selected file type is not mp4.'));
-      return;
-    }
-
     let fileDetails: VideoDetails;
 
     const getHash = () => {
-      // only 10mb
-      const bufferSize = Math.pow(1024, 2) * 10;
-      // last10Mb
-      const filePartial = file.slice(file.size - bufferSize, file.size);
-      const temporaryFileReader = new FileReader();
-
+      // TODO use getHash.ts after done with everything
       return new Promise<string>((resolve, reject) => {
-        temporaryFileReader.onerror = () => {
-          temporaryFileReader.abort();
-          reject(new DOMException('Problem parsing input file.'));
-        };
-
-        temporaryFileReader.onload = (event) => {
-          if (event && event.target) {
-            const binary = event.target.result;
-            if (typeof binary === 'string') {
-              const partialHash = md5(binary).toString();
-              resolve(partialHash);
-            }
-          }
-        };
-
-        temporaryFileReader.readAsBinaryString(filePartial);
+        resolve(SparkMD5.hash('BAD MAN'));
       });
     };
 
     const getLength = () => {
-      return new Promise<number>((resolve, reject) => {
+      return new Promise<number>((resolve) => {
         const video = document.createElement('video');
         video.preload = 'metadata';
 
@@ -58,12 +30,13 @@ export const getVideoDetails = (file: File) => {
     };
 
     try {
-      const [partialHash, length] = await Promise.all([getHash(), getLength()]);
+      const [hash, length] = await Promise.all([getHash(), getLength()]);
+      // const [hash, length] = await Promise.all([allHash(), getLength()]);
 
       fileDetails = {
         url: URL.createObjectURL(file),
         size: file.size,
-        hash: partialHash,
+        hash: hash,
         length: length,
       };
 
