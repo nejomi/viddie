@@ -11,3 +11,11 @@ export interface VideoDetails {
   length: number;
   hash: Hash;
 }
+
+export interface Subtitles {
+  kind: 'subtitles';
+  src: string;
+  srcLang: 'en';
+  default?: boolean;
+  label: 'eng';
+}

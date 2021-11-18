@@ -1,16 +1,18 @@
 import { Box, ChakraProvider, Heading, Button } from '@chakra-ui/react';
 import { HStack } from '@chakra-ui/layout';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Alert, AlertIcon } from '@chakra-ui/alert';
-import { VideoDetails } from './types/Video';
+import { VideoDetails, Subtitles } from './types/Video';
 import { getVideoDetails } from './utils/getVideoDetails';
+import ReactPlayer from 'react-player';
 
 function App() {
   const [details, setDetails] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(false);
+  const [playing, setPlaying] = useState(false);
   const [error, setError] = useState<String | null>();
   const fileRef = useRef<HTMLInputElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<ReactPlayer>(null);
 
   async function handleChange(e: React.FormEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -42,12 +44,16 @@ function App() {
         setLoading(true);
         const fileDetails = await getVideoDetails(file);
 
-        // revoke existing URL blob
+        let oldURL;
         if (details) {
-          URL.revokeObjectURL(details.url);
+          oldURL = details.url;
         }
 
         setDetails(fileDetails);
+
+        if (oldURL) {
+          URL.revokeObjectURL(oldURL);
+        }
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -57,13 +63,21 @@ function App() {
       }
       setLoading(false);
     }
+  } 
+
+  function handleSeek(seconds: number) {
+    if (videoRef.current) {
+      videoRef.current.seekTo(seconds);
+    }
   }
 
-  function seekTo(time: number) {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-      videoRef.current.play();
-    }
+  function handleProgress(callback: {
+    played: number;
+    playedSeconds: number;
+    loaded: number;
+    loadedSeconds: number;
+  }) {
+    console.log(callback.played);
   }
 
   return (
@@ -80,19 +94,24 @@ function App() {
           <Box mb='2'>
             <input type='file' ref={fileRef} onChange={handleChange} />
           </Box>
-          <video
-            ref={videoRef}
-            width='400'
-            src={details ? details.url : undefined}
-            controls
-          ></video>
-          {loading ? 'loading...' : null}
-          {details ? JSON.stringify(details) : null}
+          <Box maxW='937px'>
+            <ReactPlayer
+              width='100%'
+              height='100%'
+              ref={videoRef}
+              url={details ? details.url : undefined}
+              playing={playing}
+              onProgress={handleProgress}
+              controls
+            />
+            {loading ? 'loading...' : null}
+            {details ? JSON.stringify(details) : null}
+          </Box>
         </Box>
         <HStack mt={4}>
-          <Button>Play</Button>
-          <Button>Pause</Button>
-          <Button onClick={() => seekTo(194)}>Go to 03:14</Button>
+          <Button onClick={() => setPlaying(true)}>Play</Button>
+          <Button onClick={() => setPlaying(false)}>Pause</Button>
+          <Button onClick={() => handleSeek(194)}>Go to 03:14</Button>
         </HStack>
       </Box>
     </ChakraProvider>
