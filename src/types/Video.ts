@@ -19,3 +19,7 @@ export interface Subtitles {
   default?: boolean;
   label: 'eng';
 }
+
+export interface Video {
+  magnet: string;
+}
