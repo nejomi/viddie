@@ -1,11 +1,12 @@
 import { io, Socket } from 'socket.io-client';
-import { Message } from '../types/Types';
+import { Message, User } from '../types/Types';
 
 
 interface ServerToClientEvents {
   'room created': (d: { room: string }) => void;
-  'joined room': (r: string) => void;
+  'joined room': (d: {room: string, user: User}) => void;
   'new message': (m: Message) => void;
+  'room not found': () => void;
 }
 
 interface ClientToServerEvents {

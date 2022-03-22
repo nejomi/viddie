@@ -1,12 +1,4 @@
-import {
-  Box,
-  ChakraProvider,
-  Heading,
-  Button,
-  Input,
-  Text,
-  Flex,
-} from '@chakra-ui/react';
+import { Box, Heading, Button, Input, Text, Flex } from '@chakra-ui/react';
 import { HStack } from '@chakra-ui/layout';
 import { useRef, useState, useEffect, useContext } from 'react';
 import { Alert, AlertIcon } from '@chakra-ui/alert';
@@ -16,15 +8,14 @@ import socket from '../../utils/socket';
 import { useParams } from 'react-router-dom';
 import UserContext from '../../utils/user-context';
 import Chat from './Chat';
-import { Message } from '../../types/Types';
 
 function Room() {
   const { user, updateUser } = useContext(UserContext);
   const [torrent, setTorrent] = useState<string>(
     process.env.REACT_APP_TORRENT ?? ''
   );
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [roomNotFound, setRoomNotFound] = useState<boolean>(false);
   const [file, setFile] = useState<File>();
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -34,31 +25,49 @@ function Room() {
   // socket
   useEffect(() => {
     console.log('room use effect');
+
+    function initSockets() {
+      socket.emit('join room', room);
+
+      socket.on('room not found', () => {
+        setLoading(false);
+        setRoomNotFound(true);
+      });
+
+      socket.on('joined room', ({ user }) => {
+        updateUser(user);
+        setLoading(false);
+      });
+    }
+
+    // room host already connected
     if (socket.connected) {
-      setLoading(false);
+      initSockets();
       return;
     }
 
+    // connect
     const randName = 'joe_' + random(0, 999);
     socket.auth = { username: randName };
-    updateUser({
-      name: randName,
-      type: 'guest'
-    });
-
     socket.connect();
 
     socket.on('connect', () => {
       socket.emit('join room', room);
 
-      socket.on('joined room', () => {
+      socket.on('room not found', () => {
+        setLoading(false);
+        setRoomNotFound(true);
+      });
+
+      socket.on('joined room', ({ user }) => {
+        updateUser(user);
         setLoading(false);
       });
     });
 
     return () => {
-      socket.off('joined room');
-    }
+      socket.disconnect();
+    };
   }, [room, updateUser]);
 
   // listen to file change
@@ -75,10 +84,6 @@ function Room() {
       console.log(torrent.magnetURI);
     });
   }, [file]);
-
-  if (loading) {
-    return <div>loading...</div>;
-  }
 
   async function loadTorrent() {
     console.log('handle change torrent', torrent);
@@ -106,8 +111,16 @@ function Room() {
     socket.emit('send message', message);
   }
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (roomNotFound) {
+    return <div>Room doesn't exist</div>;
+  }
+
   return (
-    <ChakraProvider>
+    <>
       <Flex>
         <Box w='full' p={6}>
           <Box>
@@ -146,7 +159,7 @@ function Room() {
         </Box>
         <Chat onSendMessage={handleSendMessage} />
       </Flex>
-    </ChakraProvider>
+    </>
   );
 }
 

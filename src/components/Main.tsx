@@ -3,36 +3,28 @@ import { useContext, useEffect, useState } from 'react';
 import { random } from 'lodash';
 import socket from '../utils/socket';
 import { useNavigate } from 'react-router-dom';
-import UserContext from '../utils/user-context';
 
 const Main = () => {
-  const { user, updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   function handleCreateRoom() {
-    socket.auth = { username: user.name };
+    const randName = 'crissy_' + random(0, 999);
+    socket.auth = { username: randName };
     socket.connect();
     socket.emit('create room');
   }
 
   useEffect(() => {
-    const randName = 'crissy_' + random(0, 999);
-    updateUser({
-      name: randName,
-      type: 'host'
-    });
-
     socket.on('connect', () => {
-      socket.on('room created', (details) => {
-        const { room } = details;
-        socket.emit('join room', room);
-      });
-
-      socket.on('joined room', (room) => {
+      socket.on('room created', ({ room }) => {
         navigate(`/${room}`);
       });
     });
-  }, [navigate, updateUser]);
+
+    return () => {
+      socket.off();
+    }
+  }, [navigate]);
 
   return (
     <Box bg='gray.50'>
