@@ -1,20 +1,24 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Main from './Main';
-import Room from './Room';
+import Main from './components/Main';
+import Room from './components/Room/Room';
 import UserContext from './utils/user-context';
 
 function App() {
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<string>('guest');
 
-  function updateUser (user: string) {
+  const updateUser = useCallback((user: string) => {
     setUser(user);
-  }
+  }, []) 
+
+  // const updateUser = (user: string) => {
+  //   setUser(user);
+  // };
 
   return (
     <ChakraProvider>
-      <UserContext.Provider value={{user, updateUser}}>
+      <UserContext.Provider value={{ user, updateUser }}>
         <BrowserRouter>
           <Routes>
             <Route index element={<Main />} />

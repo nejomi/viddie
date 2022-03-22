@@ -1,9 +1,6 @@
 import { io, Socket } from 'socket.io-client';
+import { Message } from '../types/Types';
 
-interface Message {
-  from: string;
-  text: string;
-}
 
 interface ServerToClientEvents {
   'room created': (d: { room: string }) => void;

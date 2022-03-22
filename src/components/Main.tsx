@@ -1,9 +1,9 @@
 import { Box, Button, Center, Container, Heading } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { random } from 'lodash';
-import socket from './utils/socket';
+import socket from '../utils/socket';
 import { useNavigate } from 'react-router-dom';
-import UserContext from './utils/user-context';
+import UserContext from '../utils/user-context';
 
 const Main = () => {
   const { user, updateUser } = useContext(UserContext);
@@ -29,7 +29,7 @@ const Main = () => {
         navigate(`/${room}`);
       });
     });
-  }, [navigate]);
+  }, [navigate, updateUser]);
 
   return (
     <Box bg='gray.50'>

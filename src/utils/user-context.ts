@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface UserContextInterface {
-  user: string | null;
+  user: string;
   updateUser: (u: string) => void;
 }
 
