@@ -10,14 +10,17 @@ const Main = () => {
   const navigate = useNavigate();
 
   function handleCreateRoom() {
-    socket.auth = { username: user };
+    socket.auth = { username: user.name };
     socket.connect();
     socket.emit('create room');
   }
 
   useEffect(() => {
     const randName = 'crissy_' + random(0, 999);
-    updateUser(randName);
+    updateUser({
+      name: randName,
+      type: 'host'
+    });
 
     socket.on('connect', () => {
       socket.on('room created', (details) => {

@@ -26,7 +26,6 @@ function Room() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [file, setFile] = useState<File>();
-  const [message, setMessage] = useState<string>('');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const params = useParams();
@@ -42,7 +41,11 @@ function Room() {
 
     const randName = 'joe_' + random(0, 999);
     socket.auth = { username: randName };
-    updateUser(randName);
+    updateUser({
+      name: randName,
+      type: 'guest'
+    });
+
     socket.connect();
 
     socket.on('connect', () => {

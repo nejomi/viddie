@@ -1,4 +1,12 @@
-import { Box, Flex, Heading, Input, Text, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Heading,
+  Icon,
+  Input,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import React, {
   useCallback,
   useContext,
@@ -10,6 +18,7 @@ import socket from '../../utils/socket';
 import ChatMessage from './ChatMessage';
 import { Message } from '../../types/Types';
 import UserContext from '../../utils/user-context';
+import { FaCrown } from 'react-icons/fa';
 
 interface ChatProps {
   onSendMessage: (m: string) => void;
@@ -55,7 +64,7 @@ const Chat = ({ onSendMessage }: ChatProps) => {
       const id = new Date().getTime().toString();
 
       onSendMessage(message);
-      setMessages([...messages, { from: user, body: message, id: id }]);
+      setMessages([...messages, { from: user.name, body: message, id: id }]);
       setMessage('');
     }
   }
@@ -68,9 +77,13 @@ const Chat = ({ onSendMessage }: ChatProps) => {
             <Heading size='lg' color='gray.800'>
               Viddie
             </Heading>
-            <Text color='gray.500' fontSize='sm'>
-              Your name is {user}
-            </Text>
+            <Flex color='gray.500' fontSize='sm'>
+              <Text mr={1}>Your name is </Text>
+              <Flex alignItems='center'>
+                {user.type === 'host' && <Box as='span' mr={1}>👑</Box> }
+                {user.name}
+              </Flex>
+            </Flex>
           </Box>
           {/* Messages */}
           <Flex h='full' overflowY='auto' flexDirection='column'>

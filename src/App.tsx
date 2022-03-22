@@ -4,13 +4,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Main from './components/Main';
 import Room from './components/Room/Room';
 import UserContext from './utils/user-context';
+import { User } from './types/Types';
 
 function App() {
-  const [user, setUser] = useState<string>('guest');
+  const [user, setUser] = useState<User>({
+    name: 'guest',
+    type: 'guest',
+  });
 
-  const updateUser = useCallback((user: string) => {
-    setUser(user);
-  }, []) 
+  const updateUser = useCallback((u: User) => {
+    setUser(u);
+  }, []);
 
   // const updateUser = (user: string) => {
   //   setUser(user);
