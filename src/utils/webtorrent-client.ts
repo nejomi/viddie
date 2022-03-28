@@ -1,6 +1,7 @@
 import WebTorrent from 'webtorrent';
 
-export const client = new WebTorrent();
+const client = new WebTorrent();
+export default client;
 // export const client = new WebTorrent({
 //   tracker: {
 //     rtcConfig: {

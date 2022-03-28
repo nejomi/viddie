@@ -4,7 +4,7 @@ import socket from '../../utils/socket';
 import UserContext from '../../utils/user-context';
 import Chat from './Chat';
 import Video from './Video';
-import { client } from '../../utils/webtorrent-client';
+import client from '../../utils/webtorrent-client';
 import useRoomSocket from '../../hooks/useRoomSocket';
 
 function Room() {
@@ -41,7 +41,7 @@ function Room() {
     <>
       <Flex>
         <Box w='full' p={6}>
-          <Video client={client} magnet={roomDetails.magnet} />
+          <Video magnet={roomDetails.magnet} />
           {user.type === 'host' && (
             <Box
               d='inline-block'

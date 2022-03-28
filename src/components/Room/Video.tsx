@@ -1,49 +1,25 @@
-import { useEffect, useState } from 'react';
-import WebTorrent from 'webtorrent';
-import { client } from '../../utils/webtorrent-client';
+import { useEffect, useRef } from 'react';
+import { useVideo } from '../../hooks/useVideo';
+import { Magnet } from '../../types/Types';
 
 interface VideoProps {
-  client: WebTorrent.Instance;
-  magnet: string | null;
+  magnet: Magnet;
 }
 
 const Video = ({ magnet }: VideoProps) => {
-  const [loading, setLoading] = useState(false);
-
-  // magnet updated, update video
-  // TODO:
-  // 1. move this to room and just pass file as props if u cant renderto here
-  // 2. this function is too long create a helper function like getFileFromMagnet() or useVideo(magnet) => file
+  const { retrievingVideo, video } = useVideo(magnet);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (!magnet) {
+    if (!video) {
       return;
     }
 
-    setLoading(true);
-
-    client.add(magnet, function (torrent) {
-      // find the first file that ends with .mp4
-      var file = torrent.files.find(function (file) {
-        return file.name.endsWith('.mp4');
-      });
-
-      if (file) {
-        console.log(file);
-        setLoading(false);
-        file.renderTo('video#player', (err, elem) => {
-          if (err) throw err;
-        });
-      } else {
-        console.log('nope');
-      }
-
-      return () => {
-        console.log('removing?');
-        client.remove(magnet);
-      };
+    video.renderTo('video#player', (err, el) => {
+      if (err) throw err;
+      console.log(el);
     });
-  }, [magnet]);
+  }, [video]);
 
   if (!magnet) {
     return <div>Waiting for host to upload...</div>;
@@ -51,9 +27,10 @@ const Video = ({ magnet }: VideoProps) => {
 
   return (
     <>
-      {!loading ? (
+      {!retrievingVideo ? (
         <video
           id='player'
+          ref={videoRef}
           width='100%'
           controlsList='noplaybackrate'
           disablePictureInPicture
