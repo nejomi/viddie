@@ -2,13 +2,10 @@ import {
   Box,
   Flex,
   Heading,
-  Icon,
   Input,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import React, {
-  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -18,18 +15,14 @@ import socket from '../../utils/socket';
 import ChatMessage from './ChatMessage';
 import { Message } from '../../types/Types';
 import UserContext from '../../utils/user-context';
-import { FaCrown } from 'react-icons/fa';
 
-interface ChatProps {
-  onSendMessage: (m: string) => void;
-}
-
-const Chat = ({ onSendMessage }: ChatProps) => {
+const Chat = () => {
   const { user } = useContext(UserContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>('');
   const endOfChatRef = useRef<HTMLDivElement>(null);
 
+  // init chat socket events
   useEffect(() => {
     socket.on('new message', (message) => {
       setMessages((currentMessages) => [
@@ -43,6 +36,7 @@ const Chat = ({ onSendMessage }: ChatProps) => {
     };
   }, []);
 
+  // scroll to end on new message
   useEffect(() => {
     const scrollToEnd = () => {
       if (!endOfChatRef.current) {
@@ -57,22 +51,20 @@ const Chat = ({ onSendMessage }: ChatProps) => {
     scrollToEnd();
   }, [messages]);
 
+  // check if enter to send message
   function handleKeyDown(e: React.KeyboardEvent) {
-    // check if enter for send message
+    // TODO: add delivering / delivered functionality
     if (e.key === 'Enter' && message) {
-      // get time and convert to string
-      const id = new Date().getTime().toString();
-
-      onSendMessage(message);
-      setMessages([...messages, { from: user.name, body: message, id: id }]);
+      socket.emit('send message', message);
       setMessage('');
     }
   }
 
   return (
-    <Box w='sm' h='100vh' bg='gray.50' boxShadow='sm'>
+    <Box w='sm' h='100vh' bg='gray.50' borderRadius='lg'>
       <Flex h='full' flexDirection='column'>
-        <Box d='flex' flexDirection='column' flexGrow={1} minHeight={0} p={3}>
+        <Box p={4} d='flex' flexDirection='column' flexGrow={1} minHeight={0}>
+          {/* Heading */}
           <Box>
             <Heading size='lg' color='gray.800'>
               Viddie
@@ -80,7 +72,11 @@ const Chat = ({ onSendMessage }: ChatProps) => {
             <Flex color='gray.500' fontSize='sm'>
               <Text mr={1}>Your name is </Text>
               <Flex alignItems='center'>
-                {user.type === 'host' && <Box as='span' mr={1}>👑</Box> }
+                {user.type === 'host' && (
+                  <Box as='span' mr={1}>
+                    👑
+                  </Box>
+                )}
                 {user.name}
               </Flex>
             </Flex>

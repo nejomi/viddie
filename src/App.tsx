@@ -1,5 +1,5 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Main from './components/Main';
 import Room from './components/Room/Room';

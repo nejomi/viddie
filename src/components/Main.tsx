@@ -1,5 +1,5 @@
 import { Box, Button, Center, Container, Heading } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect} from 'react';
 import { random } from 'lodash';
 import socket from '../utils/socket';
 import { useNavigate } from 'react-router-dom';
