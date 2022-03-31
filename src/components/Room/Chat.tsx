@@ -1,16 +1,5 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Input,
-  Text,
-} from '@chakra-ui/react';
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Box, Flex, Heading, Input, Text } from '@chakra-ui/react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import socket from '../../utils/socket';
 import ChatMessage from './ChatMessage';
 import { Message } from '../../types/Types';
@@ -61,16 +50,16 @@ const Chat = () => {
   }
 
   return (
-    <Box w='sm' h='100vh' bg='gray.50' borderRadius='lg'>
+    <Box w='full' maxW='xs' h='100vh' bg='bg.light'>
       <Flex h='full' flexDirection='column'>
         <Box p={4} d='flex' flexDirection='column' flexGrow={1} minHeight={0}>
           {/* Heading */}
-          <Box>
-            <Heading size='lg' color='gray.800'>
-              Viddie
-            </Heading>
-            <Flex color='gray.500' fontSize='sm'>
-              <Text mr={1}>Your name is </Text>
+          <Flex justifyContent='space-between'>
+            <Heading fontSize={24}>Viddie</Heading>
+            <Flex alignItems='center' color='vd-gray.200' fontSize='sm'>
+              <Text mr={2} fontWeight='semibold' letterSpacing='wider'>
+                NAME:
+              </Text>
               <Flex alignItems='center'>
                 {user.type === 'host' && (
                   <Box as='span' mr={1}>
@@ -80,7 +69,7 @@ const Chat = () => {
                 {user.name}
               </Flex>
             </Flex>
-          </Box>
+          </Flex>
           {/* Messages */}
           <Flex h='full' overflowY='auto' flexDirection='column'>
             <Box marginTop='auto' />
@@ -91,7 +80,7 @@ const Chat = () => {
           </Flex>
         </Box>
         {/* Message Box */}
-        <Box h='60px' mx={2} borderTop='1px' borderColor='gray.300'>
+        <Box h='60px' px={2} bg='bg.lightest'>
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -101,7 +90,7 @@ const Chat = () => {
             mb={6}
             fontSize='16px'
             borderRadius={0}
-            placeholder='Type a message...'
+            placeholder='Send a message...'
           />
         </Box>
       </Flex>

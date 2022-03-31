@@ -1,8 +1,17 @@
-import { Box, Button, Center, Container, Heading } from '@chakra-ui/react';
-import { useEffect} from 'react';
+import {
+  Box,
+  Center,
+  Container,
+  Flex,
+  Heading,
+  Input,
+  Text,
+} from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { random } from 'lodash';
 import socket from '../utils/socket';
 import { useNavigate } from 'react-router-dom';
+import Button from './shared/Button';
 
 const Main = () => {
   const navigate = useNavigate();
@@ -23,30 +32,36 @@ const Main = () => {
 
     return () => {
       socket.off();
-    }
+    };
   }, [navigate]);
 
   return (
-    <Box bg='gray.50'>
-      <Container h='100vh' d='flex' maxW='container.sm'>
+    <Container h='100vh' maxW='container.sm'>
+      <Flex
+        h='full'
+        flexDir='column'
+        alignItems='center'
+        justifyContent='center'
+      >
+        <Heading size='3xl' mb={6}>
+          Viddie
+        </Heading>
         <Box
-          margin='auto'
+          bg='bg.lightest'
           h='400px'
           w='full'
           p='12'
-          bg='white'
           borderRadius='3xl'
           boxShadow='sm'
         >
-          <Center>
-            <Heading>Viddie</Heading>
+          <Center h='full' alignItems='center'>
+            <Button colorScheme='brand' size='lg' mb={8} onClick={handleCreateRoom}>
+              Create Room
+            </Button>
           </Center>
-          <Box>
-            <Button onClick={handleCreateRoom}>Create room</Button>
-          </Box>
         </Box>
-      </Container>
-    </Box>
+      </Flex>
+    </Container>
   );
 };
 

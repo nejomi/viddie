@@ -39,9 +39,12 @@ function Room() {
 
   return (
     <>
-      <Flex>
-        <Box w='full' p={6}>
-          <Video magnet={roomDetails.magnet} />
+      <Flex h='100vh' bg='bg.regular'>
+        <Box w='full' h='full'>
+          <Flex h='full' flexDir='column'>
+            <Video magnet={roomDetails.magnet} />
+            <Box h='full'></Box>
+          </Flex>
           {user.type === 'host' && (
             <Box
               d='inline-block'

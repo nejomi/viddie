@@ -14,3 +14,5 @@ export interface Message {
   from: string;
   body: string;
 }
+
+export type VideoEvent = 'PAUSE' | 'PLAY' | 'SEEK';

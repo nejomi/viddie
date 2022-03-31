@@ -5,14 +5,12 @@ import client from '../utils/webtorrent-client';
 
 export const useVideo = (magnet: Magnet) => {
   const [video, setVideo] = useState<TorrentFile | null>(null);
-  const [retrievingVideo, setRetrievingVideo] = useState(true);
 
   useEffect(() => {
     if (!magnet) {
       return;
     }
 
-    setRetrievingVideo(true);
 
     client.add(magnet, function (torrent) {
       // find the first file that ends with .mp4
@@ -21,7 +19,6 @@ export const useVideo = (magnet: Magnet) => {
       });
 
       if (video) {
-        setRetrievingVideo(false);
         setVideo(video);
       } else {
         console.log('No video file');
@@ -33,5 +30,5 @@ export const useVideo = (magnet: Magnet) => {
     });
   }, [magnet]);
 
-  return { video, retrievingVideo}
+  return { video }
 }

@@ -18,9 +18,11 @@
     "axios": "^0.24.0",
     "dotenv": "^8.2.0",
     "framer-motion": "^4.1.17",
+    "plyr": "^3.6.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",
+    "react-player": "^2.10.0",
     "react-router-dom": "^6.2.2",
     "react-scripts": "4.0.3",
     "socket.io-client": "^4.4.0",
@@ -51,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-error-overlay": "^6.0.9"
   }
 }

@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 
 interface MessageProps {
   from: string;
@@ -7,12 +7,14 @@ interface MessageProps {
 
 const ChatMessage = ({ from, body }: MessageProps) => {
   return (
-    <Flex w='full' my={2} flexDirection='column' alignItems='flex-start'>
-      <Text fontWeight='semibold' fontSize='sm'>
-        {from}
+    <Box w='full' my={1} alignItems='flex-start'>
+      <Text>
+        <Box as='span' mr={2} color='vd-gray.300' fontWeight='semibold'>
+          {from}
+        </Box>
+        {body}
       </Text>
-      <Text color='gray.700'>{ body }</Text>
-    </Flex>
+    </Box>
   );
 };
 
