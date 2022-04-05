@@ -19,10 +19,19 @@ function Room() {
     }
 
     console.log('seeding...');
-    client.seed(file, (torrent) => {
-      console.log('seeding complete!');
-      socket.emit('update magnet', torrent.magnetURI);
-    });
+    client.seed(
+      file,
+      {
+        announce: [
+          'ws://localhost:8000',
+        ],
+      },
+      (torrent) => {
+        console.log('seeding complete!');
+        console.log(torrent.magnetURI);
+        socket.emit('update magnet', torrent.magnetURI);
+      }
+    );
   }, [file]);
 
   function handleFileChange(file: File) {
@@ -39,12 +48,9 @@ function Room() {
 
   return (
     <>
-      <Flex h='100vh' bg='bg.regular'>
+      <Flex w='100vw' h='100vh' bg='bg.regular'>
         <Box w='full' h='full'>
-          <Flex h='full' flexDir='column'>
-            <Video magnet={roomDetails.magnet} />
-            <Box h='full'></Box>
-          </Flex>
+          <Video magnet={roomDetails.magnet} />
           {user.type === 'host' && (
             <Box
               d='inline-block'

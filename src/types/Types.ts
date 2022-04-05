@@ -16,3 +16,5 @@ export interface Message {
 }
 
 export type VideoEvent = 'PAUSE' | 'PLAY' | 'SEEK';
+
+export type VideoStatus = 'NO MAGNET' | 'LOADING TORRENT' | 'LOADING VIDEO' | 'DONE' ;
