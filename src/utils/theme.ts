@@ -38,14 +38,6 @@ const colors = {
   },
 };
 
-const styles = {
-  global: {
-    body: {
-      bg: 'bg.regular',
-    },
-  },
-};
-
-const theme = extendTheme({ config, colors, styles });
+const theme = extendTheme({ config, colors, });
 
 export default theme;

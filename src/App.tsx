@@ -4,6 +4,7 @@ import Main from './components/Main';
 import Room from './components/Room/Room';
 import UserContext from './utils/user-context';
 import { User } from './types/Types';
+import Create from './components/Create/Create';
 
 function App() {
   const [user, setUser] = useState<User>({
@@ -24,6 +25,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route index element={<Main />} />
+          <Route path='/create' element={<Create />} />
           <Route path='/:room' element={<Room />} />
         </Routes>
       </BrowserRouter>

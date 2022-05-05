@@ -7,49 +7,40 @@ import { type TorrentFile } from 'webtorrent';
 import { type VideoStatus } from '../../types/Types';
 
 interface PlayerProps {
-  video: TorrentFile | null;
   status: VideoStatus;
   onVideoLoaded: () => void;
 }
 
-const Player = ({ video, status, onVideoLoaded }: PlayerProps) => {
+const Player = ({ status, onVideoLoaded }: PlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null!);
   const [dontEvent, setDontEvent] = useState(false);
 
   useEffect(() => {
-    if (!video) {
-      return;
-    }
-
     new Plyr(document.getElementById('player')!, plyrConfig);
 
-    video.renderTo('video#player', (err, elem) => {
-      if (err) throw err;
-
-      socket.on('update video', ({ type, time }) => {
-        setDontEvent(true);
-        switch (type) {
-          case 'PLAY':
-            console.log('PLAY EVENT');
-            videoRef.current.play();
-            break;
-          case 'SEEK':
-            console.log('SEEK EVENT TO', time);
+    socket.on('update video', ({ type, time }) => {
+      setDontEvent(true);
+      switch (type) {
+        case 'PLAY':
+          console.log('PLAY EVENT');
+          videoRef.current.play();
+          break;
+        case 'SEEK':
+          console.log('SEEK EVENT TO', time);
+          videoRef.current.currentTime = time;
+          break;
+        case 'PAUSE':
+          console.log('PAUSE EVENT');
+          if (time - videoRef.current.currentTime > 3) {
             videoRef.current.currentTime = time;
-            break;
-          case 'PAUSE':
-            console.log('PAUSE EVENT');
-            if (time - videoRef.current.currentTime > 3) {
-              videoRef.current.currentTime = time;
-            }
-            videoRef.current.pause();
-            break;
-          default:
-            throw new Error(`Video event doesn't exist`);
-        }
-      });
+          }
+          videoRef.current.pause();
+          break;
+        default:
+          throw new Error(`Video event doesn't exist`);
+      }
     });
-  }, [video]);
+  }, []);
 
   const handlePause = () => {
     // not really paused while seeking
@@ -90,7 +81,13 @@ const Player = ({ video, status, onVideoLoaded }: PlayerProps) => {
       bg='black'
     >
       <Box w='full' maxW='1366px' d={status === 'DONE' ? 'block' : 'none'}>
+        <iframe
+          width='640'
+          height='360'
+          src='https://mega.nz/embed/u5tDGD6D#SaASGxtVeGRhHY4X44O4SfhoZSRVoMzYeRiI2SvpVZI'
+        ></iframe>
         <video
+          src='https://mega.nz/file/u5tDGD6D#SaASGxtVeGRhHY4X44O4SfhoZSRVoMzYeRiI2SvpVZI'
           id='player'
           ref={videoRef}
           controls
