@@ -1,9 +1,9 @@
 import { io, Socket } from 'socket.io-client';
-import { Message, User, RoomDetails, VideoEvent } from '../types/Types';
+import { Message, User, VideoEvent, VideoDetails } from '../types/Types';
 
 interface ServerToClientEvents {
   'room created': (d: { room: string }) => void;
-  'joined room': (d: { roomDetails: RoomDetails; user: User }) => void;
+  'joined room': (d: { videoDetails: VideoDetails; user: User }) => void;
   'new message': (m: Message) => void;
   'room not found': () => void;
   'magnet updated': (m: string) => void;
@@ -11,7 +11,7 @@ interface ServerToClientEvents {
 }
 
 interface ClientToServerEvents {
-  'create room': () => void;
+  'create room': (v: VideoDetails) => void;
   'join room': (r: string) => void;
   'send message': (r: string) => void;
   'update magnet': (m: string) => void;

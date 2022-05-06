@@ -11,6 +11,7 @@ import {
   Button,
   Progress,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import prettyBytes from 'pretty-bytes';
 import { useEffect, useState } from 'react';
@@ -18,20 +19,34 @@ import { useDropzone } from 'react-dropzone';
 import { HiDocumentAdd } from 'react-icons/hi';
 import useHash from '../../hooks/useHash';
 import WhatsThis from './WhatsThis';
+import { useNavigate } from 'react-router-dom';
+import socket from '../../utils/socket';
+import getLength from '../../utils/getLength';
+import { VideoDetails } from '../../types/Types';
+
+const stateMessages = {
+  'HASHING FILE': 'Hashing file',
+  'GETTING VIDEO DETAILS': 'Getting video details',
+  'WAITING FOR SERVER': 'Waiting for server',
+};
+
+type CreatingState =
+  | 'WAITING'
+  | 'HASHING FILE'
+  | 'GETTING VIDEO DETAILS'
+  | 'WAITING FOR SERVER';
 
 const Create = () => {
+  const [name, setName] = useState<string>('');
   const [file, setFile] = useState<File>();
-  const [path, setPath] = useState<string>();
+  const [path, setPath] = useState<string>('');
   const [hashEnabled, setHashEnabled] = useState<boolean>(false);
-  const { hashing, progress, hash, getHash } = useHash();
+  const [creatingState, setCreatingState] = useState<CreatingState>('WAITING');
+  const { progress, getHash } = useHash();
   const toast = useToast();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (file && hashEnabled) {
-      getHash(file);
-    }
-  }, [file, hashEnabled]);
-
+  // dropzone hook
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: 'video/mp4',
@@ -47,10 +62,57 @@ const Create = () => {
         description: 'Please select one (1) mp4 file.',
         status: 'error',
         duration: 3000,
-        isClosable:true
-      })
+        isClosable: true,
+      });
     },
   });
+
+  // on socket connect listener
+  useEffect(() => {
+    socket.on('connect', () => {
+      socket.on('room created', ({ room }) => {
+        console.log(room);
+        console.log(room);
+        navigate(`/${room}`);
+      });
+    });
+
+    return () => {
+      socket.off();
+    };
+  }, [navigate]);
+
+  const handleCreate = async () => {
+    if (!file) return;
+
+    setCreatingState('GETTING VIDEO DETAILS');
+
+    const username = name === '' ? 'User' : name;
+    socket.auth = { username };
+
+    const length = await getLength(path);
+    console.log(length);
+
+    let hash: string | null = null;
+    if (hashEnabled) {
+      setCreatingState('HASHING FILE');
+      hash = await getHash(file);
+      console.log(hash);
+    }
+
+    setCreatingState('WAITING FOR SERVER');
+
+    const videoDetails: VideoDetails = {
+      size: file.size,
+      length: length,
+      hash: hash,
+    }
+
+    socket.connect();
+    socket.emit('create room', videoDetails);
+  };
+
+  console.log(file);
 
   return (
     <Container h='100vh' maxW='container.xl'>
@@ -72,7 +134,8 @@ const Create = () => {
               borderRadius='lg'
               boxShadow='sm'
             >
-              {hashing && (
+              {/* Creating overlay */}
+              {creatingState !== 'WAITING' && (
                 <Flex
                   w='full'
                   h='full'
@@ -85,11 +148,16 @@ const Create = () => {
                   alignItems='center'
                   justifyContent='center'
                 >
-                  <Text fontWeight='semibold' mb={1}>Generating MD5 Checksum</Text>
-                    <Progress value={progress} w='52' hasStripe size='lg'/>
+                  <Spinner mb={1} />
+                  <Text fontWeight='semibold' mb={2}>
+                    {stateMessages[creatingState]}
+                  </Text>
+                  {creatingState === 'HASHING FILE' && (
+                    <Progress value={progress} w='52' hasStripe size='lg' />
+                  )}
                 </Flex>
               )}
-              <Box p={8} borderRadius='lg' bg='gray.700' as='form' w='full'>
+              <Box as='form' p={8} borderRadius='lg' bg='gray.700' w='full'>
                 <Center>
                   <Text as='h1' mb={4} fontSize='2xl' fontWeight='semibold'>
                     Create a party
@@ -100,7 +168,11 @@ const Create = () => {
                   <Text as='label' d='block' fontWeight='medium' mb={2}>
                     Display Name
                   </Text>
-                  <Input placeholder='User'></Input>
+                  <Input
+                    placeholder='User'
+                    value={name}
+                    onChange={(e) => setName(e.currentTarget.value)}
+                  ></Input>
                 </Box>
 
                 {/* Video */}
@@ -131,7 +203,9 @@ const Create = () => {
                       flexDir='column'
                     >
                       <Icon as={HiDocumentAdd} boxSize={8} color='blue.200' />
-                      <Text fontSize='sm'>Click or drag your mp4 video here</Text>
+                      <Text fontSize='sm'>
+                        Click or drag your mp4 video here
+                      </Text>
                     </Flex>
                   </Box>
                   <Flex fontSize='sm' color='gray.300'>
@@ -151,21 +225,31 @@ const Create = () => {
                 </Box>
 
                 <Box as='section' mb={4}>
-                  <Text as='label' d='block' fontWeight='semibold' mb={2}>
-                    MD5 Checksum
-                  </Text>
-                  <Input placeholder='Disabled' isDisabled={!hashEnabled} mb={2} value={hashEnabled ? hash : ''}/>
-
-                  <Flex justifyContent='space-between' alignItems='center'>
-                    <Flex alignItems='center'>
-                      <Text mr={2} as='label'>Verify checksum</Text>
-                      <Switch isChecked={hashEnabled} onChange={(e) => setHashEnabled(e.target.checked)}/>
-                    </Flex>
+                  <Flex alignItems='center' mb={2}>
+                    <Text as='label' d='block' fontWeight='semibold'>
+                      Checksum
+                    </Text>
                     <WhatsThis />
+                  </Flex>
+
+                  <Flex alignItems='center'>
+                    <Text mr={2} as='label'>
+                      Verify MD5 checksum
+                    </Text>
+                    <Switch
+                      isChecked={hashEnabled}
+                      onChange={(e) => setHashEnabled(e.target.checked)}
+                    />
                   </Flex>
                 </Box>
 
-                <Button w='full' colorScheme='blue' disabled={!file}>
+                <Button
+                  w='full'
+                  colorScheme='blue'
+                  disabled={!file}
+                  onClick={handleCreate}
+                  isLoading={creatingState !== 'WAITING'}
+                >
                   Create
                 </Button>
               </Box>

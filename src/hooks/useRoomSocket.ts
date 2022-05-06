@@ -1,43 +1,29 @@
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '../utils/user-context';
 import socket from '../utils/socket';
-import { RoomDetails } from '../types/Types';
+import { VideoDetails } from '../types/Types';
 import { getName } from '../utils/getName';
 import { useParams } from 'react-router-dom';
 
-const useRoomSocket = () => {
+const useRoomSocket = (roomId: string) => {
   const { updateUser } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
-  const [roomDetails, setRoomDetails] = useState<RoomDetails | null>(null);
-
-  const params = useParams();
-  const roomId = params.room!;
+  const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
 
   useEffect(() => {
-    if (!roomId) throw new Error('No roomId');
-
-    console.log('room use effect');
-
     function initSockets() {
       socket.emit('join room', roomId);
 
       socket.on('room not found', () => {
         setLoading(false);
-        setRoomDetails(null);
+        setVideoDetails(null);
       });
 
-      socket.on('joined room', ({ roomDetails, user }) => {
+      socket.on('joined room', ({ videoDetails, user }) => {
         document.title = user.type;
         updateUser(user);
-        setRoomDetails(roomDetails);
+        setVideoDetails(videoDetails);
         setLoading(false);
-      });
-
-      socket.on('magnet updated', (magnet) => {
-        // update magnet
-        setRoomDetails((prevDetails) => {
-          return {...prevDetails, magnet}
-        });
       });
     }
 
@@ -63,7 +49,7 @@ const useRoomSocket = () => {
 
   return {
     loading,
-    roomDetails,
+    videoDetails
   };
 };
 

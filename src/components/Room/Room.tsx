@@ -7,21 +7,24 @@ import Video from './Video';
 import useRoomSocket from '../../hooks/useRoomSocket';
 import { createMD5, md5 } from 'hash-wasm';
 import { IHasher } from 'hash-wasm/dist/lib/WASMInterface';
-import { setSyntheticTrailingComments } from 'typescript';
 import useHash from '../../hooks/useHash';
+import { useParams } from 'react-router-dom';
 
 function Room() {
-  const { user } = useContext(UserContext);
-  const { loading, roomDetails } = useRoomSocket();
+  const { user } = useContext(UserContext); 
+  const params = useParams();
+  const { loading, videoDetails } = useRoomSocket(params.room!);
   const [file, setFile] = useState<File | null>(null);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!roomDetails) {
+  if (!videoDetails) {
     return <div>Room doesn't exist</div>;
   }
+
+  console.log(videoDetails);
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();

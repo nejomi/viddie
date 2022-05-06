@@ -13,7 +13,7 @@ const Main = () => {
     const randName = 'crissy_' + random(0, 999);
     socket.auth = { username: randName };
     socket.connect();
-    socket.emit('create room');
+    // socket.emit('create room');
   }
 
   useEffect(() => {

@@ -5,14 +5,16 @@ export interface User {
   type: 'guest' | 'host';
 }
 
-export interface RoomDetails {
-  magnet: Magnet;
-}
-
 export interface Message {
   id: string;
   from: string;
   body: string;
+}
+
+export interface VideoDetails {
+  size: number;
+  length: number;
+  hash: string | null;
 }
 
 export type VideoEvent = 'PAUSE' | 'PLAY' | 'SEEK';

@@ -1,18 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { createMD5 } from 'hash-wasm';
 
 const useHash = () => {
-  const [hashing, setHashing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [hash, setHash] = useState<string>();
-  const [lastFile, setLastFile] = useState<File>();
 
   const getHash = async (file: File) => {
-    setHashing(true);
-    if (hash) setHash('');
-    console.log(file, lastFile);
-    console.log(lastFile === file);
-
     const chunkSize = 4194304;
     const chunks = Math.floor(file.size / chunkSize);
     const fileReader = new FileReader();
@@ -58,11 +50,9 @@ const useHash = () => {
     }
 
     const hashVal = hasher.digest();
-    setHashing(false);
-    setHash(hashVal);
-    setLastFile(file);
+    return hashVal;
   };
 
-  return { hashing, hash, progress, getHash };
+  return { progress, getHash };
 };
 export default useHash;

@@ -28,7 +28,7 @@ const WhatsThis = () => {
         <PopoverArrow />
         <PopoverBody fontSize='sm' fontWeight='normal'>
           <Text mb={2}>
-            Generate the MD5 Checksum for each user to verify they have the same video. Viddie will only verify video details without this enabled.
+            Generate the MD5 Checksum for each user to verify they have the same video. Viddie will only verify video length and size without this enabled.
           </Text>
           <Text>This might take a while for bigger files.</Text>
         </PopoverBody>
