@@ -9,14 +9,14 @@ import {
   PopoverBody,
 } from '@chakra-ui/react';
 
-const WhatsThis = () => {
+const WhatsThis = ({ color }: {color?: string}) => {
   return (
     <Popover trigger='hover' placement='top'>
       <PopoverTrigger>
         <Box
           as='span'
           fontSize='xs'
-          color='gray.400'
+          color={color ? color : 'gray.400'}
           ml={2}
           fontWeight='regular'
           cursor='default'
@@ -24,7 +24,7 @@ const WhatsThis = () => {
           What is this?
         </Box>
       </PopoverTrigger>
-      <PopoverContent bg='blue.800'>
+      <PopoverContent bg='blue.800' color='white'>
         <PopoverArrow />
         <PopoverBody fontSize='sm' fontWeight='normal'>
           <Text mb={2}>

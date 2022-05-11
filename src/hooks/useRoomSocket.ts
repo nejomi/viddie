@@ -3,7 +3,6 @@ import UserContext from '../utils/user-context';
 import socket from '../utils/socket';
 import { VideoDetails } from '../types/Types';
 import { getName } from '../utils/getName';
-import { useParams } from 'react-router-dom';
 
 const useRoomSocket = (roomId: string) => {
   const { updateUser } = useContext(UserContext);

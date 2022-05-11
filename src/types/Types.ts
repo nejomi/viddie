@@ -17,6 +17,25 @@ export interface VideoDetails {
   hash: string | null;
 }
 
+export interface Room {
+  host: string;
+  videoDetails: VideoDetails;
+}
+
+export interface RoomResponse extends Room {
+  connectedUsers: number;
+}
+
 export type VideoEvent = 'PAUSE' | 'PLAY' | 'SEEK';
 
-export type VideoStatus = 'NO MAGNET' | 'LOADING TORRENT' | 'LOADING VIDEO' | 'DONE' ;
+export type VideoStatus =
+  | 'NO MAGNET'
+  | 'LOADING TORRENT'
+  | 'LOADING VIDEO'
+  | 'DONE';
+
+export type VerifyingStatus =
+  | 'WAITING'
+  | 'HASHING FILE'
+  | 'GETTING VIDEO DETAILS'
+  | 'DONE';

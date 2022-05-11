@@ -1,4 +1,4 @@
-const getLength = (url: string) => {
+const getLength = (file: File) => {
   return new Promise<number>((resolve) => {
     const video = document.createElement('video');
     video.preload = 'metadata';
@@ -9,7 +9,7 @@ const getLength = (url: string) => {
       resolve(length);
     }
 
-    video.src = url;
+    video.src = URL.createObjectURL(file);
   });
 };
 

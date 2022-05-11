@@ -1,51 +1,36 @@
 import { Box, Heading, Flex } from '@chakra-ui/react';
-import React, { useState, useEffect, useContext } from 'react';
-import socket from '../../utils/socket';
+import  { useContext } from 'react';
 import UserContext from '../../utils/user-context';
 import Chat from './Chat';
-import Video from './Video';
 import useRoomSocket from '../../hooks/useRoomSocket';
-import { createMD5, md5 } from 'hash-wasm';
-import { IHasher } from 'hash-wasm/dist/lib/WASMInterface';
-import useHash from '../../hooks/useHash';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import FilepathContext from '../../utils/filepath-context';
+import Video from './Video';
 
 function Room() {
-  const { user } = useContext(UserContext); 
+  const { user } = useContext(UserContext);
   const params = useParams();
   const { loading, videoDetails } = useRoomSocket(params.room!);
-  const [file, setFile] = useState<File | null>(null);
+  const { filepath } = useContext(FilepathContext);
+  const navigate = useNavigate();
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!filepath) {
+    navigate('/join/' + params.room);
   }
 
   if (!videoDetails) {
     return <div>Room doesn't exist</div>;
   }
 
-  console.log(videoDetails);
-
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const files = e.currentTarget.files;
-
-    if (!files || files.length === 0) {
-      // handle
-      return;
-    }
-
-    const file = files[0];
-
-    setFile(file);
-  };
-
   return (
     <>
       <Flex w='100vw' h='100vh' bg='bg.regular'>
         <Box w='full' h='full'>
-          <input type='file' onChange={handleFile}></input>
-          {/* <Video /> */}
+          <Video />
         </Box>
         <Chat />
       </Flex>
