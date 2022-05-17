@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { VideoDetails } from '../types/Types';
+import { CreateVideoDetails, VideoDetails } from '../types/Types';
 import getLength from '../utils/getLength';
 import useHash from './useHash';
 
@@ -35,7 +35,7 @@ const useVideoDetails = () => {
 
     setStatus('DONE');
 
-    const videoDetails: VideoDetails = {
+    const videoDetails: CreateVideoDetails = {
       size: file.size,
       length: videoLength,
       hash: videoHash,

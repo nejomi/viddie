@@ -1,22 +1,32 @@
 import { AspectRatio, Box } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import socket from '../../utils/socket';
 import Plyr from 'plyr';
 import plyrConfig from '../../utils/plyrConfig';
 import { type TorrentFile } from 'webtorrent';
 import { type VideoStatus } from '../../types/Types';
+import FilepathContext from '../../utils/filepath-context';
 
-interface PlayerProps {
-  status: VideoStatus;
-  onVideoLoaded: () => void;
-}
-
-const Player = ({ status, onVideoLoaded }: PlayerProps) => {
-  const videoRef = useRef<HTMLVideoElement>(null!);
+const Player = ({
+  isPlaying,
+  currentTime,
+}: {
+  isPlaying: boolean;
+  currentTime: number;
+}) => {
+  // this prevents events from server to trigger client event handlers after just doing them
   const [dontEvent, setDontEvent] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null!);
+  const { filepath } = useContext(FilepathContext);
 
   useEffect(() => {
     new Plyr(document.getElementById('player')!, plyrConfig);
+
+    videoRef.current.currentTime = currentTime;
+    if (isPlaying) {
+      videoRef.current.play();
+    } 
 
     socket.on('update video', ({ type, time }) => {
       setDontEvent(true);
@@ -31,6 +41,7 @@ const Player = ({ status, onVideoLoaded }: PlayerProps) => {
           break;
         case 'PAUSE':
           console.log('PAUSE EVENT');
+          // pausing jumps to the time instead of waiting
           if (time - videoRef.current.currentTime > 3) {
             videoRef.current.currentTime = time;
           }
@@ -43,8 +54,9 @@ const Player = ({ status, onVideoLoaded }: PlayerProps) => {
   }, []);
 
   const handlePause = () => {
-    // not really paused while seeking
+    // seeking event triggers pause
     if (videoRef.current.seeking) return;
+
     if (dontEvent) return setDontEvent(false);
 
     console.log('EMIT PAUSE');
@@ -52,8 +64,9 @@ const Player = ({ status, onVideoLoaded }: PlayerProps) => {
   };
 
   const handlePlay = () => {
-    // not really played while seeking
-    if (videoRef.current.seeking || !videoRef.current.paused) return;
+    // seeking event triggers play
+    if (videoRef.current.seeking) return;
+
     if (dontEvent) return setDontEvent(false);
 
     console.log('EMIT PLAY');
@@ -67,8 +80,8 @@ const Player = ({ status, onVideoLoaded }: PlayerProps) => {
     socket.emit('seek video', videoRef.current.currentTime);
   };
 
-  const handleVideoLoaded = () => {
-    onVideoLoaded();
+  const handleProgress = () => {
+    console.log(videoRef.current.currentTime);
   };
 
   return (
@@ -80,14 +93,9 @@ const Player = ({ status, onVideoLoaded }: PlayerProps) => {
       justifyContent='center'
       bg='black'
     >
-      <Box w='full' maxW='1366px' d={status === 'DONE' ? 'block' : 'none'}>
-        <iframe
-          width='640'
-          height='360'
-          src='https://mega.nz/embed/u5tDGD6D#SaASGxtVeGRhHY4X44O4SfhoZSRVoMzYeRiI2SvpVZI'
-        ></iframe>
+      <Box w='full' maxW='1366px' d='block'>
         <video
-          src='https://mega.nz/file/u5tDGD6D#SaASGxtVeGRhHY4X44O4SfhoZSRVoMzYeRiI2SvpVZI'
+          src={filepath}
           id='player'
           ref={videoRef}
           controls
@@ -98,10 +106,11 @@ const Player = ({ status, onVideoLoaded }: PlayerProps) => {
           preload='auto'
           onWaiting={() => console.log('waiting')}
           onStalled={() => console.log('stalled')}
-          onLoadedMetadata={handleVideoLoaded}
+          // onLoadedMetadata={handleVideoLoaded}
           onSeeked={handleSeek}
           onPlay={handlePlay}
           onPause={handlePause}
+          onTimeUpdate={handleProgress}
         ></video>
       </Box>
     </Box>

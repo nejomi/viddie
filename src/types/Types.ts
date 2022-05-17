@@ -1,3 +1,5 @@
+import getVideoDetails from '../utils/getVideoDetails';
+
 export type Magnet = string | null;
 
 export interface User {
@@ -15,14 +17,19 @@ export interface VideoDetails {
   size: number;
   length: number;
   hash: string | null;
+  isPlaying: boolean;
+  currentTime: number;
 }
+
+export type CreateVideoDetails = Omit<VideoDetails, 'isPlaying' | 'currentTime'>;
 
 export interface Room {
   host: string;
   videoDetails: VideoDetails;
 }
 
-export interface RoomResponse extends Room {
+export interface RoomResponse {
+  videoDetails: VideoDetails;
   connectedUsers: number;
 }
 

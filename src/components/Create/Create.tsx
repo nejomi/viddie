@@ -61,7 +61,7 @@ const Create = () => {
 
     setCreatingState('DONE');
 
-    const videoDetails: VideoDetails = {
+    const videoDetails = {
       size: file.size,
       length: length,
       hash: hash,

@@ -20,7 +20,6 @@ function App() {
   }, []);
 
   const updateFilepath = useCallback((f: string) => {
-    console.log(f);
     setFilepath(f);
   }, [])
 
