@@ -21,7 +21,7 @@ function Room() {
 
   return (
     <>
-      <Flex w='100vw' h='100vh'>
+      <Flex w='100vw' h='100vh' bg='gray.600'>
           <Video details={videoDetails}/>
         <Chat />
       </Flex>

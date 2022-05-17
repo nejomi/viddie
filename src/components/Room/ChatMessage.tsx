@@ -9,7 +9,7 @@ const ChatMessage = ({ from, body }: MessageProps) => {
   return (
     <Box w='full' my={1} alignItems='flex-start'>
       <Text>
-        <Box as='span' mr={2} color='vd-gray.300' fontWeight='semibold'>
+        <Box as='span' mr={2} color='gray.400' fontWeight='semibold'>
           {from}
         </Box>
         {body}

@@ -50,9 +50,9 @@ const Chat = () => {
   }
 
   return (
-    <Box w='full' maxW='xs' h='100vh' bg='bg.light'>
+    <Box w='full' maxW='xs' h='100vh'>
       <Flex h='full' flexDirection='column'>
-        <Box p={4} d='flex' flexDirection='column' flexGrow={1} minHeight={0}>
+        <Box p={4} d='flex' flexDirection='column' flexGrow={1} minHeight={0} bg='blackAlpha.700'>
           {/* Heading */}
           <Flex justifyContent='space-between'>
             <Heading fontSize={24}>Viddie</Heading>
@@ -80,7 +80,7 @@ const Chat = () => {
           </Flex>
         </Box>
         {/* Message Box */}
-        <Box h='60px' px={2} bg='bg.lightest'>
+        <Box h='60px' px={2} bg='blackAlpha.800'>
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
