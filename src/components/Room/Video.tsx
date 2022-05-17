@@ -1,6 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { VideoDetails, type Magnet, type VideoStatus } from '../../types/Types';
+import { VideoDetails, type VideoStatus } from '../../types/Types';
 import Player from './Player';
 
 const Video = ({ details } : { details: VideoDetails}) => {

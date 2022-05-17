@@ -1,7 +1,3 @@
-import getVideoDetails from '../utils/getVideoDetails';
-
-export type Magnet = string | null;
-
 export interface User {
   name: string;
   type: 'guest' | 'host';
@@ -26,6 +22,7 @@ export type CreateVideoDetails = Omit<VideoDetails, 'isPlaying' | 'currentTime'>
 export interface Room {
   host: string;
   videoDetails: VideoDetails;
+  updatedOn: number
 }
 
 export interface RoomResponse {
@@ -46,3 +43,35 @@ export type VerifyingStatus =
   | 'HASHING FILE'
   | 'GETTING VIDEO DETAILS'
   | 'DONE';
+
+
+// Socket.io types
+export interface ServerToClientEvents {
+  // room events
+  'room created': (d: { room: string }) => void;
+  'joined room': (d: {
+    videoDetails: VideoDetails;
+    user: User;
+  }) => void;
+  'room not found': () => void;
+  'magnet updated': (m: string) => void;
+  // message event
+  'new message': (m: Message) => void;
+  // video events
+  'update video': (d: { type: string; time: number }) => void;
+}
+
+
+export interface ClientToServerEvents {
+  // room events
+  'create room': (videoDetails: CreateVideoDetails) => void;
+  'get room details': (roomId: string) => void;
+  'join room': (roomId: string) => void;
+  'update magnet': (m: string) => void;
+  // message event
+  'send message': (m: string) => void;
+  // video events
+  'pause video': (t: number) => void;
+  'play video': (t: number) => void;
+  'seek video': (t: number) => void;
+}
