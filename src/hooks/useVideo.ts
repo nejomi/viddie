@@ -1,3 +1,4 @@
+export default {}
 // import { formatDistance } from 'date-fns';
 // import prettyBytes from 'pretty-bytes';
 // import { useEffect, useState } from 'react';

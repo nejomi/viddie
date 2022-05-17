@@ -21,12 +21,12 @@ const Player = ({
   const { filepath } = useContext(FilepathContext);
 
   useEffect(() => {
-    new Plyr(document.getElementById('player')!, plyrConfig);
+    // new Plyr(document.getElementById('player')!, plyrConfig);
 
     videoRef.current.currentTime = currentTime;
     if (isPlaying) {
       videoRef.current.play();
-    } 
+    }
 
     socket.on('update video', ({ type, time }) => {
       setDontEvent(true);
@@ -85,21 +85,14 @@ const Player = ({
   };
 
   return (
-    <Box
-      d='flex'
-      w='full'
-      h='auto'
-      alignItems='center'
-      justifyContent='center'
-      bg='black'
-    >
-      <Box w='full' maxW='1366px' d='block'>
+    <Box d='flex' w='full' h='100vh' alignItems='center' justifyContent='center'>
+      <Box w='full' h='full'>
         <video
           src={filepath}
           id='player'
           ref={videoRef}
+          style={{ backgroundColor: 'black', width: '100%', height: '100%'}}
           controls
-          width='100%'
           controlsList='noplaybackrate'
           disablePictureInPicture
           muted={true}

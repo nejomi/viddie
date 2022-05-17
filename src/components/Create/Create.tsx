@@ -8,8 +8,6 @@ import {
   Input,
   Switch,
   Button,
-  Progress,
-  Spinner,
 } from '@chakra-ui/react';
 import prettyBytes from 'pretty-bytes';
 import { useContext, useEffect, useState } from 'react';
@@ -18,10 +16,9 @@ import { useNavigate } from 'react-router-dom';
 import socket from '../../utils/socket';
 import FilepathContext from '../../utils/filepath-context';
 import Dropzone from '../shared/Dropzone';
-import { VideoDetails, VerifyingStatus } from '../../types/Types';
+import { VerifyingStatus } from '../../types/Types';
 import useHash from '../../hooks/useHash';
 import getLength from '../../utils/getLength';
-import verifyingMessages from '../../utils/verifyingMessages';
 import VerifyOverlay from '../shared/VerifyOverlay';
 
 const Create = () => {
@@ -67,9 +64,6 @@ const Create = () => {
       hash: hash,
     }
 
-    // update file path context
-    updateFilepath(URL.createObjectURL(file));
-
     // socket username
     const username = name === '' ? 'User' : name;
     socket.auth = { username };
@@ -82,6 +76,7 @@ const Create = () => {
   const handleDropAccepted = (files: File[]) => {
     const videoFile = files[0];
     setFile(videoFile);
+    updateFilepath(URL.createObjectURL(videoFile));
   };
 
   console.log(file);

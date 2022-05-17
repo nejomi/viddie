@@ -111,7 +111,7 @@ const Join = () => {
     toast({
       title: 'Video verified',
       description: "Your video matches the host's video!",
-      duration: 4000,
+      duration: 3000,
       isClosable: true,
       status: 'success',
     });
@@ -125,7 +125,7 @@ const Join = () => {
       title: 'Wrong video',
       description: message,
       status: 'error',
-      duration: 4000,
+      duration: 3000,
       isClosable: true,
     });
   };

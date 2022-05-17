@@ -218,6 +218,7 @@ app.get('/room-details/:room', async (req, res) => {
 
   if (!room) {
     res.status(404).json({ message: 'Room does not exist.' });
+    return;
   }
 
   // get number of connected users
