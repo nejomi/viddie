@@ -19,6 +19,7 @@ interface SocketData {
 
 const app = express();
 const httpServer = createServer(app);
+const corsOrigins = ["https://viddie-alpha.netlify.com/","http://localhost:3000"];
 const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
@@ -26,7 +27,7 @@ const io = new Server<
   SocketData
 >(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: corsOrigins,
   },
 });
 
@@ -45,7 +46,9 @@ const rooms: { [key: string]: Room } = {
   },
 };
 
-app.use(cors());
+app.use(cors({
+  origin: corsOrigins
+}));
 
 //  create no room id handler
 // function handleNoRoomId() {}
