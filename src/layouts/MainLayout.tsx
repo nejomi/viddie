@@ -18,7 +18,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           Viddie
         </Heading>
         <Box
-          bg='bg.lightest'
+          bg='gray.700'
           h='400px'
           w='full'
           borderRadius='2xl'
