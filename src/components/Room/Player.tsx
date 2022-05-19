@@ -95,7 +95,7 @@ const Player = ({
           ref={videoRef}
           style={{ backgroundColor: 'black', width: '100%', height: '100%'}}
           controls
-          controlsList='noplaybackrate'
+          controlsList='noplaybackrate nodownload'
           disablePictureInPicture
           muted={true}
           preload='auto'
