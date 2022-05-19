@@ -9,8 +9,8 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(URL, {
   autoConnect: false,
 });
 
-socket.onAny((event, ...args) => {
-  console.log(event, args);
-});
+// socket.onAny((event, ...args) => {
+//   console.log(event, args);
+// });
 
 export default socket;

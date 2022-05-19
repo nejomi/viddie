@@ -21,12 +21,13 @@ const Player = ({
   const { filepath } = useContext(FilepathContext);
 
   useEffect(() => {
-    // new Plyr(document.getElementById('player')!, plyrConfig);
-
-    videoRef.current.currentTime = currentTime;
     if (isPlaying) {
       videoRef.current.play();
     }
+
+    // initial seek, dont emit this
+    setDontEvent(true);
+    videoRef.current.currentTime = currentTime;
 
     socket.on('update video', ({ type, time }) => {
       setDontEvent(true);
@@ -51,6 +52,10 @@ const Player = ({
           throw new Error(`Video event doesn't exist`);
       }
     });
+
+    return () => {
+      socket.removeListener('update video');
+    }
   }, []);
 
   const handlePause = () => {
@@ -76,12 +81,9 @@ const Player = ({
   const handleSeek = () => {
     if (dontEvent) return setDontEvent(false);
 
+    // TODO: seeking cause playing bug fix it in the future
     console.log('EMIT SEEK');
     socket.emit('seek video', videoRef.current.currentTime);
-  };
-
-  const handleProgress = () => {
-    console.log(videoRef.current.currentTime);
   };
 
   return (
@@ -99,11 +101,9 @@ const Player = ({
           preload='auto'
           onWaiting={() => console.log('waiting')}
           onStalled={() => console.log('stalled')}
-          // onLoadedMetadata={handleVideoLoaded}
           onSeeked={handleSeek}
           onPlay={handlePlay}
           onPause={handlePause}
-          onTimeUpdate={handleProgress}
         ></video>
       </Box>
     </Box>
