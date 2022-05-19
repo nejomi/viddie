@@ -5,7 +5,7 @@ import {
 } from '../types/Types';
 
 // const URL = 'http://localhost:5000';
-export const URL = 'http://ecollect.site';
+export const URL = 'https://ecollect.site';
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(URL, {
   autoConnect: false,
 });
