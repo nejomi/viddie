@@ -27,7 +27,7 @@ import VerifyOverlay from '../shared/VerifyOverlay';
 import prettyBytes from 'pretty-bytes';
 import { intervalToDuration } from 'date-fns';
 import getLength from '../../utils/getLength';
-import socket from '../../utils/socket';
+import socket, { URL as serverURL } from '../../utils/socket';
 import FilepathContext from '../../utils/filepath-context';
 
 const Join = () => {
@@ -51,7 +51,7 @@ const Join = () => {
     const getDetails = async () => {
       try {
         const { data } = await axios.get<RoomResponse>(
-          'http://localhost:5000/room-details/' + room
+          serverURL + '/room-details/' + room
         );
 
         setLoading(false);
