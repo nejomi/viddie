@@ -17,9 +17,13 @@ interface SocketData {
   currentRoom: string;
 }
 
+const corsOrigins = [
+  'http://localhost:3000',
+  'https://viddie-alpha.netlify.com',
+];
+
 const app = express();
 const httpServer = createServer(app);
-const corsOrigins = ["https://viddie-alpha.netlify.com/","http://localhost:3000"];
 const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
@@ -28,8 +32,16 @@ const io = new Server<
 >(httpServer, {
   cors: {
     origin: corsOrigins,
+    credentials: true
   },
 });
+
+app.use(
+  cors({
+    origin: corsOrigins,
+    credentials: true
+  })
+);
 
 const crypto = require('crypto');
 const rooms: { [key: string]: Room } = {
@@ -45,10 +57,6 @@ const rooms: { [key: string]: Room } = {
     updatedOn: Date.now(),
   },
 };
-
-app.use(cors({
-  origin: corsOrigins
-}));
 
 //  create no room id handler
 // function handleNoRoomId() {}
@@ -237,13 +245,4 @@ app.get('/room-details/:room', async (req, res) => {
 
 httpServer.listen(5000, () => {
   console.log('listening on port 5000');
-});
-
-app.get('/yo', (req, res) => {
-  const room = rooms['gigachad'];
-  res.json(
-    room.videoDetails.isPlaying
-      ? room.videoDetails.currentTime + (Date.now() - room.updatedOn) / 1000
-      : room.videoDetails.currentTime
-  );
 });

@@ -51,7 +51,8 @@ const Join = () => {
     const getDetails = async () => {
       try {
         const { data } = await axios.get<RoomResponse>(
-          serverURL + '/room-details/' + room
+          serverURL + '/room-details/' + room,
+          { withCredentials: true }
         );
 
         setLoading(false);
@@ -77,7 +78,7 @@ const Join = () => {
   // sockets
   useEffect(() => {
     socket.on('connect', () => {
-        navigate(`/${room}`);
+      navigate(`/${room}`);
     });
   }, []);
 
@@ -154,7 +155,7 @@ const Join = () => {
     socket.auth = { username };
 
     // update file path context
-    updateFilepath(URL.createObjectURL(file)); 
+    updateFilepath(URL.createObjectURL(file));
 
     // connect to socket
     socket.connect();
@@ -191,10 +192,16 @@ const Join = () => {
               </Heading>
             </Box>
             <Box as='section' mb={4}>
-              <Text as='label' d='block' mb={2} fontWeight='medium' >
+              <Text as='label' d='block' mb={2} fontWeight='medium'>
                 Display Name
               </Text>
-              <Input type='text' placeholder='User' name='name' value={name} onChange={(e) => setName(e.currentTarget.value)}/>
+              <Input
+                type='text'
+                placeholder='User'
+                name='name'
+                value={name}
+                onChange={(e) => setName(e.currentTarget.value)}
+              />
             </Box>
             <VideoSection file={file} onDropAccepted={handleDropAccepted} />
           </Box>
