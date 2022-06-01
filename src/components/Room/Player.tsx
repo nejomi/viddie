@@ -35,6 +35,7 @@ const Player = ({
       switch (type) {
         case 'PLAY':
           console.log('PLAY EVENT');
+          console.log(videoRef.current.paused);
           videoRef.current.play();
           break;
         case 'SEEK':
@@ -87,6 +88,13 @@ const Player = ({
     socket.emit('seek video', videoRef.current.currentTime);
   };
 
+  const handleEnded = () => {
+    // on ended, video player doesnt emit play on re-play
+    // TODO: everyone will emit this if they all ended at the same time, otherwise only 1 will emit if they end first
+    // needs fix
+    videoRef.current.currentTime = 0.1;
+  }
+
   return (
     <Box d='flex' w='full' h='100vh' alignItems='center' justifyContent='center'>
       <Box w='full' h='full'>
@@ -105,6 +113,7 @@ const Player = ({
           onSeeked={handleSeek}
           onPlay={handlePlay}
           onPause={handlePause}
+          onEnded={handleEnded}
         ></video>
       </Box>
     </Box>
