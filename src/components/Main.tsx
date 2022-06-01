@@ -22,6 +22,8 @@ const Main = () => {
             me on discord.
           </Text>
           <Link
+            w='max-content'
+            d='inline-block'
             fontSize='lg'
             fontWeight='semibold'
             mb={14}
