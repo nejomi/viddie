@@ -28,6 +28,7 @@ const Player = ({
     // initial seek, dont emit this
     setDontEvent(true);
     videoRef.current.currentTime = currentTime;
+    setDontEvent(false);
 
     socket.on('update video', ({ type, time }) => {
       setDontEvent(true);
