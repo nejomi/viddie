@@ -73,6 +73,10 @@ const Join = () => {
     };
 
     getDetails();
+
+    return () => {
+      toast.closeAll();
+    }
   }, []);
 
   // sockets
