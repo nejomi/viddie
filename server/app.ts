@@ -19,7 +19,7 @@ interface SocketData {
 
 const corsOrigins = [
   'http://localhost:3000',
-  'https://viddie-alpha.netlify.com',
+  'https://viddie-alpha.netlify.app',
 ];
 
 const app = express();
