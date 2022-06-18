@@ -31,18 +31,17 @@ const useRoomSocket = (roomId: string) => {
 
       socket.on('joined room', ({ videoDetails, user }) => {
         console.log('Got video details.');
-        document.title = user.type;
         updateUser(user);
         setVideoDetails(videoDetails);
         setLoading(false);
       });
-    }
+    };
 
     // cleanup function
     const cleanUp = () => {
       console.log('Cleanup disconnecting sockets.');
       socket.disconnect();
-    }
+    };
 
     // room host already connected
     if (socket.connected) {
