@@ -1,15 +1,12 @@
 import {
   Button as ChakraButton,
-  LightMode,
   type ButtonProps,
 } from '@chakra-ui/react';
 import { transparentize } from '@chakra-ui/theme-tools';
-import { generateKeyPair } from 'crypto';
 
 const Button = ({ colorScheme, variant, ...props }: ButtonProps) => {
   const isBrand = colorScheme === 'brand';
 
-  let btn;
   let config: ButtonProps = {};
 
   if (isBrand) {

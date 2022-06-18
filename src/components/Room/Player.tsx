@@ -1,10 +1,6 @@
-import { AspectRatio, Box } from '@chakra-ui/react';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Box } from '@chakra-ui/react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import socket from '../../utils/socket';
-import Plyr from 'plyr';
-import plyrConfig from '../../utils/plyrConfig';
-import { type TorrentFile } from 'webtorrent';
-import { type VideoStatus } from '../../types/Types';
 import FilepathContext from '../../utils/filepath-context';
 
 const Player = ({
@@ -58,7 +54,7 @@ const Player = ({
     return () => {
       socket.removeListener('update video');
     };
-  }, []);
+  }, [isPlaying, currentTime]);
 
   const handlePause = () => {
     console.log('pause', loading, dontEvent);

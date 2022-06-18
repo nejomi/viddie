@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { VideoDetails } from '../../types/Types';
 import Player from './Player';
 

@@ -48,6 +48,7 @@ const Join = () => {
 
   // get room details
   useEffect(() => {
+    console.log('get room details');
     const getDetails = async () => {
       try {
         const { data } = await axios.get<RoomResponse>(
@@ -77,14 +78,15 @@ const Join = () => {
     return () => {
       toast.closeAll();
     }
-  }, []);
+  }, [room, toast]);
 
   // sockets
   useEffect(() => {
+    console.log('sockets');
     socket.on('connect', () => {
       navigate(`/${room}`);
     });
-  }, []);
+  }, [navigate, room]);
 
   const handleDropAccepted = async (files: File[]) => {
     if (!videoDetails) return;

@@ -60,7 +60,7 @@ const useRoomSocket = (roomId: string) => {
     });
 
     return cleanUp;
-  }, [roomId, updateUser, filepath]);
+  }, [roomId, updateUser, filepath, navigate]);
 
   return {
     loading,
