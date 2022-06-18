@@ -16,19 +16,19 @@ const Player = ({
 }) => {
   // this prevents events from server to trigger client event handlers after just doing them
   const [dontEvent, setDontEvent] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement>(null!);
   const { filepath } = useContext(FilepathContext);
 
   useEffect(() => {
+    // initial play
     if (isPlaying) {
       videoRef.current.play();
     }
 
-    // initial seek, dont emit this
-    setDontEvent(true);
+    // initial seek
     videoRef.current.currentTime = currentTime;
-    setDontEvent(false);
 
     socket.on('update video', ({ type, time }) => {
       setDontEvent(true);
@@ -57,12 +57,13 @@ const Player = ({
 
     return () => {
       socket.removeListener('update video');
-    }
+    };
   }, []);
 
   const handlePause = () => {
+    console.log('pause', loading, dontEvent);
     // seeking event triggers pause
-    if (videoRef.current.seeking) return;
+    if (videoRef.current.seeking || loading) return;
 
     if (dontEvent) return setDontEvent(false);
 
@@ -71,9 +72,9 @@ const Player = ({
   };
 
   const handlePlay = () => {
+    console.log('play', loading, dontEvent);
     // seeking event triggers play
-    if (videoRef.current.seeking) return;
-
+    if (videoRef.current.seeking || loading) return;
     if (dontEvent) return setDontEvent(false);
 
     console.log('EMIT PLAY');
@@ -81,6 +82,8 @@ const Player = ({
   };
 
   const handleSeek = () => {
+    console.log('seek', loading, dontEvent);
+    if (loading) return;
     if (dontEvent) return setDontEvent(false);
 
     // TODO: seeking cause playing bug fix it in the future
@@ -93,16 +96,27 @@ const Player = ({
     // TODO: everyone will emit this if they all ended at the same time, otherwise only 1 will emit if they end first
     // needs fix
     videoRef.current.currentTime = 0.1;
-  }
+  };
+
+  const handleLoadedData = async () => {
+    console.log('loaded data');
+    setLoading(false);
+  };
 
   return (
-    <Box d='flex' w='full' h='100vh' alignItems='center' justifyContent='center'>
+    <Box
+      d='flex'
+      w='full'
+      h='100vh'
+      alignItems='center'
+      justifyContent='center'
+    >
       <Box w='full' h='full'>
         <video
           src={filepath}
           id='player'
           ref={videoRef}
-          style={{ backgroundColor: 'black', width: '100%', height: '100%'}}
+          style={{ backgroundColor: 'black', width: '100%', height: '100%' }}
           controls
           controlsList='noplaybackrate nodownload'
           disablePictureInPicture
@@ -110,6 +124,7 @@ const Player = ({
           preload='auto'
           onWaiting={() => console.log('waiting')}
           onStalled={() => console.log('stalled')}
+          onLoadedData={handleLoadedData}
           onSeeked={handleSeek}
           onPlay={handlePlay}
           onPause={handlePause}

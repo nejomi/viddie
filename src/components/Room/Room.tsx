@@ -1,13 +1,10 @@
-import { Box, Heading, Flex } from '@chakra-ui/react';
-import { useContext, useEffect } from 'react';
-import UserContext from '../../utils/user-context';
+import { Flex } from '@chakra-ui/react';
 import Chat from './Chat';
 import useRoomSocket from '../../hooks/useRoomSocket';
 import { useParams } from 'react-router-dom';
 import Video from './Video';
 
 function Room() {
-  const { user } = useContext(UserContext);
   const params = useParams();
   const { loading, videoDetails } = useRoomSocket(params.room!);
   
