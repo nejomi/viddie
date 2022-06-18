@@ -210,7 +210,7 @@ io.on('connection', (socket) => {
     io.in(roomId).emit('new event', {
       event: {
        id: 'play video' + randomId(),
-       message: `${socket.data.username} continued the playback`,
+       message: `${socket.data.username} played the video`,
        type: 'event'
       }
     });
@@ -260,7 +260,6 @@ io.on('connection', (socket) => {
        type: 'event'
       }
     });
-
 
     if (roomId === 'gigachad') {
       return;
