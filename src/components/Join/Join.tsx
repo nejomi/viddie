@@ -157,7 +157,7 @@ const Join = () => {
     if (!canJoin || !file) return;
 
     // socket username
-    const username = name === '' ? 'User' : name;
+    const username = !name || name.trim() === '' ? 'User' : name;
     socket.auth = { username };
 
     // update file path context
