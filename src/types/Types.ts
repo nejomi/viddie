@@ -7,6 +7,13 @@ export interface Message {
   id: string;
   from: string;
   body: string;
+  type: 'message';
+}
+
+export interface Event {
+  id: string;
+  message: string;
+  type: 'event';
 }
 
 export interface VideoDetails {
@@ -17,12 +24,15 @@ export interface VideoDetails {
   currentTime: number;
 }
 
-export type CreateVideoDetails = Omit<VideoDetails, 'isPlaying' | 'currentTime'>;
+export type CreateVideoDetails = Omit<
+  VideoDetails,
+  'isPlaying' | 'currentTime'
+>;
 
 export interface Room {
   host: string;
   videoDetails: VideoDetails;
-  updatedOn: number
+  updatedOn: number;
 }
 
 export interface RoomResponse {
@@ -44,23 +54,19 @@ export type VerifyingStatus =
   | 'GETTING VIDEO DETAILS'
   | 'DONE';
 
-
 // Socket.io types
 export interface ServerToClientEvents {
   // room events
   'room created': (d: { room: string }) => void;
-  'joined room': (d: {
-    videoDetails: VideoDetails;
-    user: User;
-  }) => void;
+  'joined room': (d: { videoDetails: VideoDetails; user: User }) => void;
   'room not found': () => void;
   'magnet updated': (m: string) => void;
   // message event
   'new message': (m: Message) => void;
   // video events
   'update video': (d: { type: string; time: number }) => void;
+  'new event': (d: { event: Event }) => void;
 }
-
 
 export interface ClientToServerEvents {
   // room events

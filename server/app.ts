@@ -58,11 +58,14 @@ const rooms: { [key: string]: Room } = {
   },
 };
 
+function randomId() {
+  return crypto.randomBytes(3).toString('hex');
+}
 //  create no room id handler
 // function handleNoRoomId() {}
 
 io.on('connection', (socket) => {
-  socket.data.username = socket.handshake.auth.username;
+  socket.data.username = socket.handshake.auth.username || 'User';
 
   console.log('connected', new Date());
 
@@ -123,12 +126,22 @@ io.on('connection', (socket) => {
     const videoDetails = room.videoDetails;
     videoDetails.currentTime = currentTime;
 
+    const name = socket.data.username || 'User';
+
     socket.emit('joined room', {
       videoDetails: videoDetails,
       user: {
-        name: socket.data.username || 'User',
+        name: name,
         type: room.host === socket.id ? 'host' : 'guest',
       },
+    });
+
+    io.in(roomId).emit('new event', {
+      event: {
+       id: 'user joined ' + randomId(),
+       message: `${name} joined the room🥳`,
+       type: 'event'
+      }
     });
 
     console.log(socket.data.username + ' joined room ' + roomId);
@@ -147,6 +160,7 @@ io.on('connection', (socket) => {
       id: crypto.randomBytes(3).toString('hex'),
       from: socket.data.username as string,
       body: message,
+      type: 'message'
     });
   });
 
@@ -165,6 +179,15 @@ io.on('connection', (socket) => {
       type: 'PAUSE',
       time: time,
     });
+
+    // emit event message
+    io.in(roomId).emit('new event', {
+      event: {
+       id: 'paused video' + randomId(),
+       message: `${socket.data.username} paused the video`,
+       type: 'event'
+      }
+    });
   });
 
   socket.on('play video', (time) => {
@@ -182,6 +205,15 @@ io.on('connection', (socket) => {
       type: 'PLAY',
       time: time,
     });
+
+    // emit event message
+    io.in(roomId).emit('new event', {
+      event: {
+       id: 'play video' + randomId(),
+       message: `${socket.data.username} continued the playback`,
+       type: 'event'
+      }
+    });
   });
 
   socket.on('seek video', (time) => {
@@ -196,6 +228,20 @@ io.on('connection', (socket) => {
       type: 'SEEK',
       time: time,
     });
+
+    // convert time
+    const baseTime = new Date(time * 1000).toISOString();
+    // MM:SS on time < 3600, else HH:MM:SS
+    const formattedTime = time < 3600 ? baseTime.substring(14, 19) : baseTime.substring(11,19);
+
+    // emit event message
+    io.in(roomId).emit('new event', {
+      event: {
+       id: 'seek video' + randomId(),
+       message: `${socket.data.username} jumped to ${formattedTime}`,
+       type: 'event'
+      }
+    });
   });
 
   // disconnect
@@ -205,6 +251,16 @@ io.on('connection', (socket) => {
     if (!roomId) {
       return;
     }
+
+    // emit event message
+    io.in(roomId).emit('new event', {
+      event: {
+       id: 'disconnect video' + randomId(),
+       message: `${socket.data.username} disconnected`,
+       type: 'event'
+      }
+    });
+
 
     if (roomId === 'gigachad') {
       return;

@@ -1,0 +1,15 @@
+/* width */
+div#messages::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Track */
+div#messages::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+div#messages::-webkit-scrollbar-thumb {
+  background: #4299E1;
+  border-radius: 15px;
+}

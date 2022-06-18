@@ -30,23 +30,34 @@ const ChatMessage = ({ from, body }: MessageProps) => {
 
   const removeAsterisks = (word: string) => {
     return word.replace(/\*/g, '');
-  }
+  };
 
   return (
-    <Box w='full' my={1} alignItems='flex-start'>
-      <Text>
-        <Box as='span' mr={2} color='gray.400' fontWeight='semibold'>
-          {from}
-        </Box>
-        {words.map((word, i) =>
-          checkIfNeedsBold(word) ? (
-            <Box key={word + i} as='span' fontWeight='bold'>
-              {removeAsterisks(word) + ' '}
-            </Box>
-          ) : 
-          `${word} ` 
-        )}
-      </Text>
+    <Box
+      d='flex'
+      w='full'
+      my={1}
+      alignItems='flex-start'
+      color='whiteAlpha.700'
+    >
+      <Box mr={2} color='white' fontWeight='semibold'>
+        {from}
+      </Box>
+      <p>
+        {words.map((word, i) => {
+          const bold = checkIfNeedsBold(word);
+
+          return bold ? (
+            <>
+              <Box as='span' key={word + i} fontWeight='bold' whiteSpace='pre'>
+                {removeAsterisks(word)}
+              </Box>{' '}
+            </>
+          ) : (
+            `${word} `
+          );
+        })}
+      </p>
     </Box>
   );
 };
