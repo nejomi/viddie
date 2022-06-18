@@ -117,7 +117,7 @@ const Chat = () => {
                 </PopoverTrigger>
                 <PopoverContent
                   w='max-content'
-                  bgColor={shareClicked ? 'green.500' : 'gray.600'}
+                  bgColor={shareClicked ? 'green.800' : 'gray.700'}
                   fontSize='sm'
                 >
                   <PopoverArrow
