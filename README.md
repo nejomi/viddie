@@ -1,46 +1,52 @@
-# Getting Started with Create React App
+# Viddie
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Viddie](https://viddie-alpha.netlify.com) is a watch party web application that synchronizes user's local video file on the browser. 
 
-## Available Scripts
+![Screenshot](./public/screenshots/demo_picture.png)
 
-In the project directory, you can run:
+## Creating a Room Demo
 
-### `npm start`
+![Creating a room demo](./public/screenshots/creating_demo.gif)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## About the Project
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+ Viddie allows users to create watch party rooms to synchronize and match their local video file with other users. Users joining a room must have the same file of the room host in order to join. The application verifies the size and length of the video file but room hosts may force checking the file's checksum before joining. The video file users select must be playable in the browser for the application to work properly.
 
-### `npm test`
+### Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ - Create rooms that synchronizes the playback of a local video file
+ - Sync plays, pauses, and seeks to all users in a room
+ - Hash video files before creating / joining a room
+ - Text chat
 
-### `npm run build`
+### Built with
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ - React
+ - Typescript
+ - Node.js
+ - Socket.IO
+ - Chakra UI
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Current Limitations
+The application currently only allows the **MPEG-4 video file format**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Quick Start
+This project was bootstrapped with create-react-app. The server code is made with Node.js and is located in the server folder.
 
-### `npm run eject`
+### React Frontend
+ - Install npm dependcies of the React app in the root directory of the repo with `npm install`.
+ - Create .env file by copying the .env.example file.
+ - Start the react application with `npm start`.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+ ### Node Backend
+ - Change directory to the server directory  example: `cd server`.
+ - Install npm dependencies of the server with `npm install`.
+ - Start the server with `npm run serve` while in the server directory.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Roadmap
+View the project roadmap hosted in Notion [here](https://volume-internet-destination-durock-elementary.notion.site/Roadmap-ef7c028132274b49b84f6a0df1531719).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## License
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Distributed under the MIT License. See `LICENSE` for more information.
